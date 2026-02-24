@@ -11,10 +11,27 @@ const PUBLIC_PATHS = ["/", "/login", "/register", "/forgot-password", "/reset-pa
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Handle CORS preflight requests
+  if (request.method === "OPTIONS") {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Max-Age": "86400",
+      },
+    });
+  }
+
   const isPublic = PUBLIC_PATHS.includes(pathname) || pathname.startsWith("/reset-password") || pathname.startsWith("/api/auth") || pathname === "/api/packages" || pathname === "/api/register" || pathname.startsWith("/api/register/");
   if (isPublic) {
     if (pathname === "/" || pathname.startsWith("/api/")) {
-      return NextResponse.next();
+      const response = NextResponse.next();
+      response.headers.set("Access-Control-Allow-Origin", "*");
+      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+      response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      return response;
     }
     const token = request.cookies.get("auth-token")?.value;
     if (token) {
@@ -32,7 +49,11 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get("auth-token")?.value;
   if (!token) {
     if (pathname.startsWith("/api/")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      const response = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      response.headers.set("Access-Control-Allow-Origin", "*");
+      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+      response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      return response;
     }
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -56,14 +77,22 @@ export async function middleware(request: NextRequest) {
     }
   } catch {
     if (pathname.startsWith("/api/")) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      const response = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      response.headers.set("Access-Control-Allow-Origin", "*");
+      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+      response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      return response;
     }
     const res = NextResponse.redirect(new URL("/login", request.url));
     res.cookies.delete("auth-token");
     return res;
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  response.headers.set("Access-Control-Allow-Origin", "*");
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return response;
 }
 
 export const config = {

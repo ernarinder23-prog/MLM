@@ -34,7 +34,7 @@ export default async function EditIndividualPage({ params }: { params: Promise<{
           email: user.email,
           phone: user.phone,
           address: user.address,
-          dateOfBirth: user.dateOfBirth?.toISOString().slice(0, 10),
+          dateOfBirth: user.dateOfBirth?.toISOString().slice(0, 10) ?? null,
           packageId: user.packageId,
           investmentAmount: user.investmentAmount,
           bankName: bankDetails.bankName || "",

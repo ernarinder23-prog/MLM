@@ -19,7 +19,14 @@ export default async function AdminLayout({
     manageKyc: true,
     managePlans: true,
     readBinaryTree: true,
-  } : {});
+  } : {
+    viewUsers: false,
+    viewReports: false,
+    approveWithdrawals: false,
+    manageKyc: false,
+    managePlans: false,
+    readBinaryTree: false,
+  });
 
   return (
     <div className="flex min-h-screen bg-background">

@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #0F2A44;
+  --secondary: #1DB954;
+  --accent: #F4C430;
+  --background: #F5F7FA;
+  --card: #FFFFFF;
+  --text-primary: #1E1E1E;
+  --text-secondary: #6B7280;
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --error: #DC2626;
+}
+
+body {
+  @apply font-body text-text-primary bg-background antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-heading font-semibold;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-white font-button px-6 py-2.5 rounded-lg transition-colors;
+  }
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary/90 text-white font-button px-6 py-2.5 rounded-lg transition-colors;
+  }
+  .btn-accent {
+    @apply bg-accent hover:bg-accent/90 text-primary font-button px-6 py-2.5 rounded-lg transition-colors;
+  }
+  .card {
+    @apply bg-card rounded-xl shadow-sm border border-gray-100 p-6;
+  }
+  .input {
+    @apply w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all;
+  }
+}

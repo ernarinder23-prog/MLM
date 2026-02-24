@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                  String              @id @default(cuid())
+  username            String              @unique
+  email               String              @unique
+  passwordHash        String
+  firstName           String
+  lastName            String
+  phone               String?
+  address             String?
+  dateOfBirth         DateTime?
+  role                String              @default("INDIVIDUAL")
+  isActive            Boolean             @default(true)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  placementId         String?
+  placementSide       String?
+  sponsorId           String?
+  leftChildId         String?             @unique
+  rightChildId        String?             @unique
+  parentId            String?
+  franchiseId         String?
+  packageId           String?
+  bankDetails         String?
+  ePin                String?
+  investmentAmount    Float?              @default(0)
+  activityLogs        ActivityLog[]
+  kyc                 Kyc?
+  subAdminPermissions SubAdminPermission?
+  transactions        Transaction[]
+  package             Package?            @relation(fields: [packageId], references: [id])
+  franchise           Franchise?          @relation(fields: [franchiseId], references: [id])
+  parent              User?               @relation("BinaryTree", fields: [parentId], references: [id])
+  placedUsers         User[]              @relation("BinaryTree")
+  sponsor             User?               @relation("SponsorRelation", fields: [sponsorId], references: [id])
+  referrals           User[]              @relation("SponsorRelation")
+  wallet              Wallet?
+  withdrawals         Withdrawal[]
+}
+
+model SubAdminPermission {
+  id                 String  @id @default(cuid())
+  userId             String  @unique
+  viewUsers          Boolean @default(false)
+  viewReports        Boolean @default(false)
+  approveWithdrawals Boolean @default(false)
+  manageKyc          Boolean @default(false)
+  managePlans        Boolean @default(false)
+  readBinaryTree     Boolean @default(false)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Franchise {
+  id           String   @id @default(cuid())
+  name         String
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  phone        String?
+  address      String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  users        User[]
+}
+
+model Package {
+  id             String   @id @default(cuid())
+  name           String
+  type           String
+  amount         Float
+  level          Int      @default(1)
+  businessVolume Float    @default(0)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  users          User[]
+}
+
+model Wallet {
+  id             String        @id @default(cuid())
+  userId         String        @unique
+  balance        Float         @default(0)
+  binaryIncome   Float         @default(0)
+  referralIncome Float         @default(0)
+  totalEarnings  Float         @default(0)
+  updatedAt      DateTime      @updatedAt
+  transactions   Transaction[]
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String
+  amount      Float
+  description String?
+  createdAt   DateTime @default(now())
+  walletId    String?
+  wallet      Wallet?  @relation(fields: [walletId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Withdrawal {
+  id          String    @id @default(cuid())
+  userId      String
+  amount      Float
+  status      String    @default("PENDING")
+  bankDetails String?
+  requestedAt DateTime  @default(now())
+  processedAt DateTime?
+  processedBy String?
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Kyc {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  documentType String
+  documentUrl  String
+  status       String    @default("PENDING")
+  verifiedAt   DateTime?
+  verifiedBy   String?
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model SystemSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}

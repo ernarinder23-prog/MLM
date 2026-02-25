@@ -35,13 +35,13 @@ export default async function HomePage() {
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
           <Link
-            href="/login"
+            href="/login?type=individual"
             className="px-8 py-4 rounded-xl bg-secondary hover:bg-secondary/90 font-button text-lg transition-colors"
           >
             Individual Login
           </Link>
           <Link
-            href="/login"
+            href="/login?type=admin"
             className="px-8 py-4 rounded-xl bg-accent text-primary hover:bg-accent/90 font-button text-lg transition-colors"
           >
             Franchise / Admin

@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const loginType = searchParams.get("type") || "individual";
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -45,7 +47,9 @@ export default function LoginPage() {
         </div>
         <div className="text-center mb-8">
           <h1 className="text-3xl font-heading font-bold text-primary">MLM Platform</h1>
-          <p className="text-text-secondary mt-2">Individual Login</p>
+          <p className="text-text-secondary mt-2">
+            {loginType === "admin" ? "Franchise / Admin Login" : "Individual Login"}
+          </p>
         </div>
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -89,7 +93,11 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full btn-primary py-3 disabled:opacity-70"
             >
-              {loading ? "Signing in..." : "Individual Login"}
+              {loading
+                ? "Signing in..."
+                : loginType === "admin"
+                ? "Franchise / Admin Login"
+                : "Individual Login"}
             </button>
           </form>
         </div>

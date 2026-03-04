@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { DeleteButton } from "@/components/DeleteButton";
 
 export default async function PlansPage() {
   const plans = await prisma.package.findMany({
@@ -39,12 +40,19 @@ export default async function PlansPage() {
               <p><span className="text-text-secondary">Amount:</span> ₹{p.amount}</p>
               <p><span className="text-text-secondary">BV:</span> {p.businessVolume}</p>
             </div>
-            <Link
-              href={`/admin/plans/${p.id}`}
-              className="mt-4 inline-block text-secondary hover:underline text-sm"
-            >
-              Edit Plan
-            </Link>
+            <div className="mt-4 flex items-center gap-3">
+              <Link
+                href={`/admin/plans/${p.id}`}
+                className="text-secondary hover:underline text-sm"
+              >
+                Edit
+              </Link>
+              <DeleteButton
+                id={p.id}
+                apiEndpoint="/api/admin/plans"
+                confirmMessage={`Delete plan "${p.name}"? This action cannot be undone.`}
+              />
+            </div>
           </div>
         ))}
       </div>

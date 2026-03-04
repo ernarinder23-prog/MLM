@@ -42,7 +42,7 @@ export function LoginForm() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-heading font-bold text-primary">MLM Platform</h1>
         <p className="text-text-secondary mt-2">
-          {loginType === "admin" ? "Franchise / Admin Login" : "Individual Login"}
+          {loginType === "admin" ? "Admin Login" : "Individual Login"}
         </p>
       </div>
       <div className="card">
@@ -90,17 +90,11 @@ export function LoginForm() {
             {loading
               ? "Signing in..."
               : loginType === "admin"
-              ? "Franchise / Admin Login"
+              ? "Admin Login"
               : "Individual Login"}
           </button>
         </form>
       </div>
-      <p className="text-center text-text-secondary text-sm mt-6">
-        Don&apos;t have an account?{" "}
-        <Link href="/register" className="text-secondary font-medium hover:underline">
-          Register
-        </Link>
-      </p>
     </>
   );
 }

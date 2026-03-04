@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   const session = await getSession();
@@ -88,6 +89,9 @@ export async function POST(request: NextRequest) {
     await prisma.wallet.create({
       data: { userId: user.id },
     });
+
+    // Send welcome email
+    await sendWelcomeEmail(user.email, user.firstName, user.username, password);
 
     return NextResponse.json({ success: true, id: user.id });
   } catch (error) {

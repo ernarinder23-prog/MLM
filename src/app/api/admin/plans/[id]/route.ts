@@ -32,3 +32,29 @@ export async function PATCH(
 
   return NextResponse.json({ success: true });
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (session.role === "SUB_ADMIN" && !session.subAdminPerms?.managePlans) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if (session.role !== "SUPER_ADMIN" && session.role !== "SUB_ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const { id } = await params;
+
+  try {
+    await prisma.package.delete({
+      where: { id },
+    });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Delete plan error:", error);
+    return NextResponse.json({ error: "Failed to delete plan" }, { status: 500 });
+  }
+}

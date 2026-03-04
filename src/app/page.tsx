@@ -44,7 +44,7 @@ export default async function HomePage() {
             href="/login?type=admin"
             className="px-8 py-4 rounded-xl bg-accent text-primary hover:bg-accent/90 font-button text-lg transition-colors"
           >
-            Franchise / Admin
+            Admin
           </Link>
         </div>
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">

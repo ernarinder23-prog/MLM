@@ -22,18 +22,18 @@ export async function sendWelcomeEmail(
     const mailOptions = {
       from: process.env.SMTP_EMAIL || "er.narinder23@gmail.com",
       to: email,
-      subject: "Welcome to MLM Platform - Account Created",
+      subject: "Welcome to Condence Solution - Account Created",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px;">
-            <h2 style="color: #333; margin-bottom: 20px;">Welcome to MLM Platform!</h2>
+            <h2 style="color: #333; margin-bottom: 20px;">Welcome to Condence Solution!</h2>
             
             <p style="color: #555; font-size: 16px; margin-bottom: 15px;">
               Hi <strong>${firstName}</strong>,
             </p>
             
             <p style="color: #555; font-size: 16px; margin-bottom: 20px;">
-              Your account has been successfully created on the MLM website.
+              Your account has been successfully created on the Condence Solution platform.
             </p>
             
             <div style="background-color: #fff; padding: 15px; border-left: 4px solid #007bff; margin: 20px 0;">
@@ -56,17 +56,17 @@ export async function sendWelcomeEmail(
             
             <p style="color: #888; font-size: 13px; margin-top: 10px;">
               Best regards,<br>
-              <strong>MLM Platform Team</strong>
+              <strong>Condence Solution Team</strong>
             </p>
           </div>
         </div>
       `,
       text: `
-Welcome to MLM Platform!
+Welcome to Condence Solution!
 
 Hi ${firstName},
 
-Your account has been successfully created on the MLM website.
+Your account has been successfully created on the Condence Solution platform.
 
 LOGIN CREDENTIALS:
 Username: ${username}
@@ -77,7 +77,7 @@ You can now log in to your account and start managing your network.
 If you did not create this account, please ignore this email or contact support.
 
 Best regards,
-MLM Platform Team
+Condence Solution Team
       `,
     };
 

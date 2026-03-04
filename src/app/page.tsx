@@ -16,7 +16,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-primary/90 text-white">
       <nav className="flex items-center justify-between px-8 py-6">
-        <h1 className="text-2xl font-heading font-bold">MLM Platform</h1>
+        <h1 className="text-2xl font-heading font-bold">Condence Solution</h1>
         <div className="flex gap-4">
           <Link
             href="/login"
@@ -31,7 +31,7 @@ export default async function HomePage() {
           Build Your Network. Grow Your Income.
         </h2>
         <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto">
-          Professional MLM platform with binary tree, real-time analytics, and secure financial workflows.
+          Professional network marketing platform with binary tree, real-time analytics, and secure financial workflows.
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
           <Link

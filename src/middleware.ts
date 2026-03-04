@@ -6,7 +6,7 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "mlm-secret-key-change-in-production"
 );
 
-const PUBLIC_PATHS = ["/", "/login", "/register", "/forgot-password", "/reset-password"];
+const PUBLIC_PATHS = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/admin/login"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -37,6 +37,10 @@ export async function middleware(request: NextRequest) {
     if (token) {
       try {
         await jwtVerify(token, JWT_SECRET);
+        // Don't redirect from login pages - let the layout handle it
+        if (pathname === "/login" || pathname === "/admin/login") {
+          return NextResponse.next();
+        }
         const base = pathname.startsWith("/admin") ? "/admin" : pathname.startsWith("/franchise") ? "/franchise" : "/dashboard";
         return NextResponse.redirect(new URL(base, request.url));
       } catch {

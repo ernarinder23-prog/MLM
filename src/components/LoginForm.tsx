@@ -4,10 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export function LoginForm() {
+export function LoginForm({ loginType: propLoginType }: { loginType?: string } = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const loginType = searchParams.get("type") || "individual";
+  const loginType = propLoginType || searchParams.get("type") || "individual";
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

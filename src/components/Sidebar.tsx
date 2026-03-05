@@ -94,7 +94,7 @@ export function Sidebar({ role, permissions, variant }: SidebarProps) {
     <aside className="w-64 min-h-screen bg-primary text-white flex flex-col">
       <div className="p-6 border-b border-white/10">
         <Link href="/" className="font-heading font-bold text-xl">
-          Condence Solution
+          Cadence Solution
         </Link>
         <p className="text-xs text-white/60 mt-1 capitalize">{role.replace("_", " ")}</p>
       </div>

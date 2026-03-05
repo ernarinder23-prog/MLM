@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Condence Solution | Professional Network Marketing",
+  title: "Cadence Solution | Professional Network Marketing",
   description: "Multi-Level Marketing platform with secure dashboards",
 };
 

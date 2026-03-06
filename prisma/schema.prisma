@@ -148,3 +148,19 @@ model SystemSettings {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+model OtpSession {
+  id              String   @id @default(cuid())
+  identifier      String   // Email or Phone Number
+  type            String   // "email" or "sms"
+  code            String
+  attemptCount    Int      @default(0)
+  isVerified      Boolean  @default(false)
+  maxAttempts     Int      @default(5)
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([identifier])
+  @@index([expiresAt])
+}

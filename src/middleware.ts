@@ -6,7 +6,7 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "mlm-secret-key-change-in-production"
 );
 
-const PUBLIC_PATHS = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/admin/login"];
+const PUBLIC_PATHS = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/admin/login", "/verify-otp"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

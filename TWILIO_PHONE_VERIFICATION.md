@@ -143,7 +143,7 @@ Make sure country code matches phone format!
    - Share error code with Twilio support: https://www.twilio.com/docs/errors/
 
 2. **Verify Credentials:**
-   - Account SID: `ACfe5a7b8b536c2bbeebe9566b2b30554d`
+   - Account SID: `YOUR_ACCOUNT_SID_HERE`
    - Phone: `+19089462860`
    - Check Twilio Console for account status
 

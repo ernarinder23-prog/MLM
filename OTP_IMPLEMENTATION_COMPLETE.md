@@ -99,8 +99,8 @@ Add to your `.env` file:
 
 ```env
 # Twilio (already configured)
-TWILIO_ACCOUNT_SID=ACfe5a7b8b536c2bbeebe9566b2b30554d
-TWILIO_AUTH_TOKEN=e550448fc9b387dc07df363f64edf590
+TWILIO_ACCOUNT_SID=YOUR_ACCOUNT_SID_HERE
+TWILIO_AUTH_TOKEN=YOUR_ACCOUNT_SID_HERE
 TWILIO_PHONE_NUMBER=+19089462860
 
 # Email SMTP (configure your email provider)

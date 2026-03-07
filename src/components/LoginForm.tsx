@@ -113,9 +113,9 @@ export function LoginForm({ loginType: propLoginType }: { loginType?: string } =
                 <p className="text-xs text-text-secondary mt-1">
                   Example: +1234567890 or example@email.com
                 </p>
-                <p className="text-xs text-text-secondary mt-2">
+                {/* <p className="text-xs text-text-secondary mt-2">
                   💡 <strong>Tip:</strong> Email OTP is fully working. For phone-based OTP, ensure your phone number is verified in your Twilio account settings.
-                </p>
+                </p> */}
               </div>
               <div>
                 <label className="block text-sm font-medium text-text-primary mb-2">Password</label>

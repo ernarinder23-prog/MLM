@@ -23,7 +23,7 @@ export function WorkingPlanEditForm({ plan }: { plan: WorkingPlan }) {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch(/api/admin/working-plans/, {
+      const res = await fetch(`/api/admin/working-plans/${plan.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

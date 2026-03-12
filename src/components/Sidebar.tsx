@@ -15,6 +15,8 @@ import {
   ShieldCheck,
   BarChart3,
   CreditCard,
+  ClipboardList,
+  Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +39,8 @@ const adminNav: NavItem[] = [
   { href: "/admin/franchises", label: "Franchises", icon: Building2 },
   { href: "/admin/sub-admins", label: "Sub Admins", icon: ShieldCheck },
   { href: "/admin/plans", label: "MLM Plans", icon: Package },
+  { href: "/admin/working-plans", label: "Working Plan", icon: ClipboardList, perm: "managePlans" },
+  { href: "/admin/quality-rewards", label: "Quality Rewards", icon: Award, perm: "managePlans" },
   { href: "/admin/individuals", label: "Individuals", icon: Users, perm: "viewUsers" },
   { href: "/admin/withdrawals", label: "Withdrawals", icon: CreditCard },
   { href: "/admin/binary-tree", label: "Binary Tree", icon: TreePine, perm: "readBinaryTree" },
@@ -101,11 +105,8 @@ export function Sidebar({ role, permissions, variant }: SidebarProps) {
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {filteredNav.map((item) => {
           const Icon = item.icon;
-          // Only one menu item should be active at a time
-          // Exact match OR if current path is a sub-route of this item (e.g., /admin/individuals/add highlights /admin/individuals)
           const isExactMatch = pathname === item.href;
           const isSubRoute = pathname.startsWith(item.href + "/");
-          // Root paths (/admin, /franchise, /dashboard) only match exactly
           const isRootPath = item.href === "/admin" || item.href === "/franchise" || item.href === "/dashboard";
           const isActive = isExactMatch || (!isRootPath && isSubRoute);
           return (

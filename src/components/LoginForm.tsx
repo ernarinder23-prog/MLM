@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export function LoginForm({ loginType: propLoginType }: { loginType?: string } = {}) {
   const router = useRouter();
@@ -146,6 +147,11 @@ export function LoginForm({ loginType: propLoginType }: { loginType?: string } =
               ? "Franchise Login"
               : "Member Login"}
           </button>
+          <div className="text-right">
+            <Link href="/forgot-password" className="text-sm text-secondary hover:underline">
+              Forgot password?
+            </Link>
+          </div>
         </form>
       </div>
     </>

@@ -1,13 +1,27 @@
 import nodemailer from "nodemailer";
 
+const smtpHost = process.env.SMTP_HOST;
+const smtpPort = Number(process.env.SMTP_PORT || "587");
+const smtpSecure = process.env.SMTP_SECURE === "true";
+const smtpUser = process.env.SMTP_USER || process.env.SMTP_EMAIL;
+const smtpPass = process.env.SMTP_PASSWORD;
+const smtpFrom = process.env.SMTP_FROM_EMAIL || smtpUser || "noreply@cadencesolution.com";
+
 // Email transporter configuration
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.SMTP_EMAIL || "er.narinder23@gmail.com",
-    pass: process.env.SMTP_PASSWORD || "bbkr gxob hdik hdvc",
-  },
-});
+const transporter = smtpHost && smtpUser && smtpPass
+  ? nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure,
+      auth: { user: smtpUser, pass: smtpPass },
+    })
+  : nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_EMAIL || "er.narinder23@gmail.com",
+        pass: process.env.SMTP_PASSWORD || "bbkr gxob hdik hdvc",
+      },
+    });
 
 /**
  * Send a welcome email to a newly created user
@@ -20,7 +34,7 @@ export async function sendWelcomeEmail(
 ) {
   try {
     const mailOptions = {
-      from: process.env.SMTP_EMAIL || "er.narinder23@gmail.com",
+      from: smtpFrom,
       to: email,
       subject: "Welcome to Cadence Solution - Account Created",
       html: `
@@ -86,6 +100,40 @@ Cadence Solution Team
     return { success: true, messageId: result.messageId };
   } catch (error) {
     console.error("Failed to send welcome email:", error);
+    return { success: false, error };
+  }
+}
+
+export async function sendPasswordResetEmail(email: string, resetUrl: string) {
+  try {
+    const mailOptions = {
+      from: smtpFrom,
+      to: email,
+      subject: "Reset your Cadence Solution password",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">Reset your password</h2>
+          <p style="font-size: 16px; color: #555;">
+            We received a request to reset your password. Click the button below to choose a new one.
+          </p>
+          <div style="margin: 24px 0;">
+            <a href="${resetUrl}" style="background:#007bff;color:#fff;padding:12px 18px;border-radius:6px;text-decoration:none;">
+              Reset Password
+            </a>
+          </div>
+          <p style="font-size: 14px; color: #888;">
+            If you didn’t request this, you can safely ignore this email.
+          </p>
+        </div>
+      `,
+      text: `Reset your password\n\nOpen this link to reset your password:\n${resetUrl}\n\nIf you didn’t request this, you can ignore this email.`,
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    console.log("Password reset email sent:", result.messageId);
+    return { success: true, messageId: result.messageId };
+  } catch (error) {
+    console.error("Failed to send password reset email:", error);
     return { success: false, error };
   }
 }

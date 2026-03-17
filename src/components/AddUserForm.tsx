@@ -40,6 +40,7 @@ interface AddUserFormProps {
   title?: string;
   placementUsersApi?: string;
   onSuccess?: () => void;
+  showEPin?: boolean;
 }
 
 const defaultForm: AddUserFormValues = {
@@ -69,6 +70,7 @@ export function AddUserForm({
   title = "Add Individual",
   placementUsersApi = "/api/franchise/placement-users",
   onSuccess,
+  showEPin = true,
 }: AddUserFormProps) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -105,7 +107,7 @@ export function AddUserForm({
         packageId: form.packageId || undefined,
         investmentAmount: form.investmentAmount || undefined,
         bankDetails: form.bankName || form.accountNo || form.ifsc ? { bankName: form.bankName, accountNo: form.accountNo, ifsc: form.ifsc } : undefined,
-        ePin: form.ePin || undefined,
+        ePin: showEPin ? (form.ePin || undefined) : undefined,
       };
       const res = await fetch(submitApi, {
         method: "POST",
@@ -207,10 +209,12 @@ export function AddUserForm({
             <input type="text" value={form.ifsc} onChange={(e) => setForm({ ...form, ifsc: e.target.value })} className="input" />
           </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-2">E-Pin</label>
-          <input type="text" value={form.ePin} onChange={(e) => setForm({ ...form, ePin: e.target.value })} className="input" placeholder="E-Pin" />
-        </div>
+        {showEPin && (
+          <div>
+            <label className="block text-sm font-medium mb-2">E-Pin</label>
+            <input type="text" value={form.ePin} onChange={(e) => setForm({ ...form, ePin: e.target.value })} className="input" placeholder="E-Pin" />
+          </div>
+        )}
         <button type="submit" disabled={loading} className="btn-primary">{loading ? "Creating..." : submitLabel}</button>
       </form>
     </div>

@@ -19,6 +19,7 @@ export default function DashboardAddUserPage() {
         backHref="/dashboard/referrals"
         title="Add User"
         placementUsersApi="/api/individual/placement-users"
+        showEPin={false}
         onSuccess={() => {
           router.push("/dashboard/tree");
           router.refresh();

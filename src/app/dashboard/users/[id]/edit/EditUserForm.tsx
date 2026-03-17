@@ -45,7 +45,6 @@ export function EditUserForm({ user, packages }: EditUserFormProps) {
     bankName: user.bankName,
     accountNo: user.accountNo,
     ifsc: user.ifsc,
-    ePin: user.ePin || "",
     isActive: user.isActive,
   });
   const [error, setError] = useState("");
@@ -139,10 +138,6 @@ export function EditUserForm({ user, packages }: EditUserFormProps) {
             <label className="block text-sm font-medium mb-2">IFSC</label>
             <input type="text" value={form.ifsc} onChange={(e) => setForm({ ...form, ifsc: e.target.value })} className="input" />
           </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-2">E-Pin</label>
-          <input type="text" value={form.ePin} onChange={(e) => setForm({ ...form, ePin: e.target.value })} className="input" />
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="rounded" />

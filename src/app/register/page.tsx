@@ -10,7 +10,6 @@ function RegisterForm() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -19,22 +18,18 @@ function RegisterForm() {
     dateOfBirth: "",
     placementId: ref,
     placementSide: "LEFT" as "LEFT" | "RIGHT",
-    packageId: "",
   });
-  const [packages, setPackages] = useState<{ id: string; name: string; amount: number }[]>([]);
   const [sponsors, setSponsors] = useState<{ id: string; username: string }[]>([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/packages").then((r) => r.json()),
-      fetch("/api/register/sponsors").then((r) => r.json()),
-    ]).then(([pkgRes, sponsorRes]) => {
-      if (pkgRes.packages) setPackages(pkgRes.packages);
-      if (sponsorRes.sponsors) setSponsors(sponsorRes.sponsors);
-    });
+    fetch("/api/register/sponsors")
+      .then((r) => r.json())
+      .then((sponsorRes) => {
+        if (sponsorRes.sponsors) setSponsors(sponsorRes.sponsors);
+      });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -75,7 +70,7 @@ function RegisterForm() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="w-full max-w-md card text-center">
-          <div className="text-4xl text-success mb-4">✓</div>
+          <div className="text-4xl text-success mb-4">OK</div>
           <h2 className="text-xl font-heading font-semibold text-primary mb-2">Registration Complete</h2>
           <p className="text-text-secondary mb-6">You can now sign in with your credentials.</p>
           <Link href="/login" className="btn-primary inline-block">Sign In</Link>
@@ -105,8 +100,8 @@ function RegisterForm() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Username</label>
-              <input type="text" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="input" required />
+              <label className="block text-sm font-medium mb-1">User ID</label>
+              <input type="text" value="Auto-generated" className="input" disabled />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Email</label>
@@ -135,7 +130,7 @@ function RegisterForm() {
               <input type="date" value={form.dateOfBirth} onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })} className="input" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Sponsor (Placement ID)</label>
+              <label className="block text-sm font-medium mb-1">Sponsor (User ID)</label>
               <select value={form.placementId} onChange={(e) => setForm({ ...form, placementId: e.target.value })} className="input">
                 <option value="">Select sponsor</option>
                 {sponsors.map((s) => (
@@ -148,15 +143,6 @@ function RegisterForm() {
               <select value={form.placementSide} onChange={(e) => setForm({ ...form, placementSide: e.target.value as "LEFT" | "RIGHT" })} className="input">
                 <option value="LEFT">Left Leg</option>
                 <option value="RIGHT">Right Leg</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Package</label>
-              <select value={form.packageId} onChange={(e) => setForm({ ...form, packageId: e.target.value })} className="input">
-                <option value="">Select package</option>
-                {packages.map((p) => (
-                  <option key={p.id} value={p.id}>{p.name} (₹{p.amount})</option>
-                ))}
               </select>
             </div>
             <button type="submit" disabled={loading} className="w-full btn-primary py-3">{loading ? "Registering..." : "Register"}</button>

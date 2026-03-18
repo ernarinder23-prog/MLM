@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { hashPassword } from "@/lib/auth";
 
 export async function PATCH(
   request: NextRequest,
@@ -34,7 +35,6 @@ export async function PATCH(
     const {
       firstName,
       lastName,
-      username,
       email,
       phone,
       address,
@@ -44,26 +44,42 @@ export async function PATCH(
       bankDetails,
       ePin,
       isActive,
+      planType,
+      planDuration,
+      password,
     } = body;
 
-    if (!firstName || !lastName || !username || !email) {
+    if (!firstName || !lastName || !email) {
       return NextResponse.json(
-        { error: "First name, last name, username and email required" },
+        { error: "First name, last name and email required" },
         { status: 400 }
       );
     }
 
-    // Check if username or email is already in use by another user
-    const exists = await prisma.user.findFirst({
+    if (!planType || !planDuration) {
+      return NextResponse.json(
+        { error: "Plan type and duration required" },
+        { status: 400 }
+      );
+    }
+
+    if (password && password.length < 6) {
+      return NextResponse.json(
+        { error: "Password must be at least 6 characters" },
+        { status: 400 }
+      );
+    }
+
+    const emailExists = await prisma.user.findFirst({
       where: {
-        OR: [{ username }, { email }],
+        email,
         NOT: { id: userId },
       },
     });
 
-    if (exists) {
+    if (emailExists) {
       return NextResponse.json(
-        { error: "Username or email already in use" },
+        { error: "Email already in use" },
         { status: 400 }
       );
     }
@@ -75,16 +91,18 @@ export async function PATCH(
       data: {
         firstName,
         lastName,
-        username,
         email,
         phone: phone || null,
         address: address || null,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
-        packageId: packageId || null,
+        package: packageId ? { connect: { id: packageId } } : { disconnect: true },
         investmentAmount: invAmount,
         bankDetails: bankDetails ? JSON.stringify(bankDetails) : null,
-        ePin: ePin || null,
         isActive,
+        planType,
+        planDuration,
+        ...(password ? { passwordHash: await hashPassword(password) } : {}),
+        ...(ePin !== undefined ? { ePin: ePin || null } : {}),
       },
     });
 

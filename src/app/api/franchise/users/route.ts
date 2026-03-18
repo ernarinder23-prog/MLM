@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import { sendWelcomeEmail } from "@/lib/email";
+import { generateUserId } from "@/lib/user-id";
 
 export async function POST(request: NextRequest) {
   const session = await getSession();
@@ -15,7 +16,6 @@ export async function POST(request: NextRequest) {
     const {
       firstName,
       lastName,
-      username,
       email,
       password,
       phone,
@@ -27,21 +27,37 @@ export async function POST(request: NextRequest) {
       investmentAmount,
       bankDetails,
       ePin,
+      planType,
+      planDuration,
     } = body;
 
-    if (!firstName || !lastName || !username || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
       return NextResponse.json(
-        { error: "First name, last name, username, email and password required" },
+        { error: "First name, last name, email and password required" },
+        { status: 400 }
+      );
+    }
+
+    if (!planType || !planDuration) {
+      return NextResponse.json(
+        { error: "Plan type and duration required" },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: "Password must be at least 6 characters" },
         { status: 400 }
       );
     }
 
     const exists = await prisma.user.findFirst({
-      where: { OR: [{ username }, { email }] },
+      where: { email },
     });
     if (exists) {
       return NextResponse.json(
-        { error: "Username or email already in use" },
+        { error: "Email already in use" },
         { status: 400 }
       );
     }
@@ -52,6 +68,7 @@ export async function POST(request: NextRequest) {
 
     const passwordHash = await hashPassword(password);
     const invAmount = investmentAmount != null && investmentAmount !== "" ? parseFloat(investmentAmount) : null;
+    const username = await generateUserId();
     const user = await prisma.user.create({
       data: {
         firstName,
@@ -63,13 +80,15 @@ export async function POST(request: NextRequest) {
         address: address || null,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         role: "INDIVIDUAL",
-        franchiseId: session.userId,
-        sponsorId: placementId || null,
+        franchise: { connect: { id: session.userId } },
+        sponsor: placementId ? { connect: { id: placementId } } : undefined,
         placementSide: placementSide === "RIGHT" ? "RIGHT" : "LEFT",
-        packageId: packageId || null,
+        package: packageId ? { connect: { id: packageId } } : undefined,
         investmentAmount: invAmount,
         bankDetails: bankDetails ? JSON.stringify(bankDetails) : null,
         ePin: ePin || null,
+        planType,
+        planDuration,
       },
     });
 

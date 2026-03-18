@@ -5,7 +5,7 @@ import { prisma } from "@/lib/db";
 async function buildTree(userId: string, depth: number): Promise<{
   id: string;
   username: string;
-  packageName?: string;
+  planType?: string | null;
   investmentAmount?: number | null;
   businessVolume?: number | null;
   joiningDate?: string;
@@ -15,7 +15,6 @@ async function buildTree(userId: string, depth: number): Promise<{
   if (depth > 10) return null;
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    include: { package: true },
   });
   if (!user) return null;
 
@@ -27,11 +26,11 @@ async function buildTree(userId: string, depth: number): Promise<{
     rightId ? buildTree(rightId, depth + 1) : null,
   ]);
 
-  const bv = user.package?.businessVolume ?? user.investmentAmount ?? 0;
+  const bv = user.investmentAmount ?? 0;
   return {
     id: user.id,
     username: user.username,
-    packageName: user.package?.name,
+    planType: user.planType,
     investmentAmount: user.investmentAmount,
     businessVolume: bv,
     joiningDate: user.createdAt?.toISOString?.() || new Date(user.createdAt).toISOString(),

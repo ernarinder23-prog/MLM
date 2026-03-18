@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
+import { generateUserId } from "@/lib/user-id";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,7 +9,6 @@ export async function POST(request: NextRequest) {
     const {
       firstName,
       lastName,
-      username,
       email,
       password,
       phone,
@@ -19,19 +19,19 @@ export async function POST(request: NextRequest) {
       packageId,
     } = body;
 
-    if (!firstName || !lastName || !username || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
       return NextResponse.json(
-        { error: "First name, last name, username, email and password required" },
+        { error: "First name, last name, email and password required" },
         { status: 400 }
       );
     }
 
     const exists = await prisma.user.findFirst({
-      where: { OR: [{ username }, { email }] },
+      where: { email },
     });
     if (exists) {
       return NextResponse.json(
-        { error: "Username or email already in use" },
+        { error: "Email already in use" },
         { status: 400 }
       );
     }
@@ -40,7 +40,15 @@ export async function POST(request: NextRequest) {
       where: { id: placementId, role: "INDIVIDUAL" },
     }) : null;
 
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: "Password must be at least 6 characters" },
+        { status: 400 }
+      );
+    }
+
     const passwordHash = await hashPassword(password);
+    const username = await generateUserId();
     const user = await prisma.user.create({
       data: {
         firstName,
@@ -52,9 +60,9 @@ export async function POST(request: NextRequest) {
         address: address || null,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         role: "INDIVIDUAL",
-        sponsorId: placementId || null,
+        sponsor: placementId ? { connect: { id: placementId } } : undefined,
         placementSide: placementSide === "RIGHT" ? "RIGHT" : "LEFT",
-        packageId: packageId || null,
+        package: packageId ? { connect: { id: packageId } } : undefined,
       },
     });
 

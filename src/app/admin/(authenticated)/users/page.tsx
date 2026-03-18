@@ -19,8 +19,8 @@ export default async function AdminUsersPage() {
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/50">
                 <th className="text-left py-4 px-4 font-medium">User</th>
-                <th className="text-left py-4 px-4 font-medium">Username</th>
-                <th className="text-left py-4 px-4 font-medium">Package</th>
+                <th className="text-left py-4 px-4 font-medium">User ID</th>
+                <th className="text-left py-4 px-4 font-medium">Plan Type</th>
                 <th className="text-left py-4 px-4 font-medium">Franchise</th>
                 <th className="text-left py-4 px-4 font-medium">Status</th>
                 <th className="text-left py-4 px-4 font-medium">Actions</th>
@@ -31,7 +31,7 @@ export default async function AdminUsersPage() {
                 <tr key={u.id} className="border-b border-gray-100 hover:bg-gray-50/50">
                   <td className="py-4 px-4">{u.firstName} {u.lastName}</td>
                   <td className="py-4 px-4">{u.username}</td>
-                  <td className="py-4 px-4">{u.package?.name || "-"}</td>
+                  <td className="py-4 px-4">{u.planType === "FIXED" ? "Fixed" : u.planType === "FLEXI" ? "Flexi" : "-"}</td>
                   <td className="py-4 px-4">{u.franchise?.name || "-"}</td>
                   <td className="py-4 px-4">
                     <span

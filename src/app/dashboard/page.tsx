@@ -31,7 +31,7 @@ export default async function DashboardPage() {
       <h1 className="text-2xl font-heading font-bold text-primary mb-2">
         Welcome, {user.firstName}!
       </h1>
-      <p className="text-text-secondary mb-8">{user.package?.name || "No package"} • {user.username}</p>
+      <p className="text-text-secondary mb-8">{user.package?.name || "No package"} • User ID {user.username}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {cards.map((c) => {

@@ -70,7 +70,7 @@ export default async function FranchiseDashboardPage() {
           <tbody>
             {recentUsers.map((u) => (
               <tr key={u.id} className="border-b border-gray-100">
-                <td className="py-3">{u.firstName} {u.lastName} ({u.username})</td>
+                <td className="py-3">{u.firstName} {u.lastName} (User ID {u.username})</td>
                 <td className="py-3 text-text-secondary">{new Date(u.createdAt).toLocaleDateString()}</td>
               </tr>
             ))}

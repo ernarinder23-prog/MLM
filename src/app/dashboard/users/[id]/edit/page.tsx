@@ -20,7 +20,6 @@ export default async function EditUserPage({ params }: { params: Promise<{ id: s
     return notFound();
   }
 
-  const packages = await prisma.package.findMany({ where: { isActive: true } });
   let bankDetails: { bankName?: string; accountNo?: string; ifsc?: string } = {};
   if (user.bankDetails) {
     try {
@@ -44,15 +43,15 @@ export default async function EditUserPage({ params }: { params: Promise<{ id: s
           phone: user.phone,
           address: user.address,
           dateOfBirth: user.dateOfBirth?.toISOString().slice(0, 10) ?? null,
-          packageId: user.packageId,
           investmentAmount: user.investmentAmount,
           bankName: bankDetails.bankName || "",
           accountNo: bankDetails.accountNo || "",
           ifsc: bankDetails.ifsc || "",
           ePin: user.ePin || "",
+          planType: user.planType,
+          planDuration: user.planDuration,
           isActive: user.isActive,
         }}
-        packages={packages}
       />
     </div>
   );

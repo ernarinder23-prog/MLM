@@ -31,7 +31,7 @@ export default async function WithdrawalsPage() {
               {withdrawals.map((w) => (
                 <tr key={w.id} className="border-b border-gray-100">
                   <td className="py-4 px-4">
-                    {w.user.firstName} {w.user.lastName} ({w.user.username})
+                    {w.user.firstName} {w.user.lastName} (User ID {w.user.username})
                   </td>
                   <td className="py-4 px-4 font-medium">₹{w.amount}</td>
                   <td className="py-4 px-4">

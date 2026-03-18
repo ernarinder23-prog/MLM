@@ -29,7 +29,7 @@ export default async function KycPage() {
             {kycList.map((k) => (
               <tr key={k.id} className="border-b border-gray-100">
                 <td className="py-4 px-4">
-                  {k.user.firstName} {k.user.lastName} ({k.user.username})
+                  {k.user.firstName} {k.user.lastName} (User ID {k.user.username})
                 </td>
                 <td className="py-4 px-4">{k.documentType}</td>
                 <td className="py-4 px-4">

@@ -59,7 +59,7 @@ export default async function ReportsPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200 text-left text-text-secondary text-sm sticky top-0 bg-white">
-                <th className="pb-3 font-medium">User</th>
+                <th className="pb-3 font-medium">User ID</th>
                 <th className="pb-3 font-medium">Type</th>
                 <th className="pb-3 font-medium">Amount</th>
                 <th className="pb-3 font-medium">Date</th>

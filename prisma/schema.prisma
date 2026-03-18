@@ -32,6 +32,8 @@ model User {
   bankDetails         String?
   ePin                String?
   investmentAmount    Float?              @default(0)
+  planType            String?
+  planDuration        String?
   activityLogs        ActivityLog[]
   kyc                 Kyc?
   subAdminPermissions SubAdminPermission?

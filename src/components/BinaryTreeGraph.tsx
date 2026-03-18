@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 interface TreeNode {
   id: string;
   username: string;
-  packageName?: string;
+  planType?: string | null;
   investmentAmount?: number | null;
   businessVolume?: number | null;
   joiningDate?: string;
@@ -171,7 +171,7 @@ export function BinaryTreeGraph({ rootId, refetchKey = 0 }: BinaryTreeGraphProps
                 fill={selected?.id === node.id ? "rgba(255,255,255,0.9)" : "#6B7280"}
                 fontSize={10}
               >
-                {node.packageName || "-"} {node.investmentAmount != null ? `₹${node.investmentAmount}` : ""}
+                {node.planType === "FIXED" ? "Fixed" : node.planType === "FLEXI" ? "Flexi" : "-"} {node.investmentAmount != null ? `₹${node.investmentAmount}` : ""}
               </text>
             </g>
           ))}
@@ -193,9 +193,9 @@ export function BinaryTreeGraph({ rootId, refetchKey = 0 }: BinaryTreeGraphProps
       </div>
       {selected && (
         <div className="absolute top-4 right-4 card w-72 shadow-lg z-10">
-          <h4 className="font-semibold text-primary">{selected.username}</h4>
-          <p className="text-sm text-text-secondary">ID: {selected.id}</p>
-          <p className="text-sm text-text-secondary">Package: {selected.packageName || "-"}</p>
+          <h4 className="font-semibold text-primary">User ID {selected.username}</h4>
+          <p className="text-sm text-text-secondary">Internal ID: {selected.id}</p>
+          <p className="text-sm text-text-secondary">Plan Type: {selected.planType === "FIXED" ? "Fixed" : selected.planType === "FLEXI" ? "Flexi" : "-"}</p>
           {selected.investmentAmount != null && selected.investmentAmount > 0 && (
             <p className="text-sm text-text-secondary">Investment: ₹{selected.investmentAmount.toFixed(2)}</p>
           )}

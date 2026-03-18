@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { hashPassword } from "@/lib/auth";
 
 export async function PATCH(
   request: NextRequest,
@@ -16,21 +17,37 @@ export async function PATCH(
 
   const invAmount = body.investmentAmount != null && body.investmentAmount !== "" ? parseFloat(body.investmentAmount) : null;
 
+  if (!body.planType || !body.planDuration) {
+    return NextResponse.json(
+      { error: "Plan type and duration required" },
+      { status: 400 }
+    );
+  }
+
+  if (body.password && body.password.length < 6) {
+    return NextResponse.json(
+      { error: "Password must be at least 6 characters" },
+      { status: 400 }
+    );
+  }
+
   await prisma.user.update({
     where: { id, role: "INDIVIDUAL" },
     data: {
       firstName: body.firstName,
       lastName: body.lastName,
-      username: body.username,
       email: body.email,
       phone: body.phone || null,
       address: body.address || null,
       dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : null,
-      packageId: body.packageId || null,
+      package: body.packageId ? { connect: { id: body.packageId } } : { disconnect: true },
       investmentAmount: invAmount,
       bankDetails: body.bankDetails ? JSON.stringify(body.bankDetails) : null,
       ePin: body.ePin || null,
       isActive: !!body.isActive,
+      planType: body.planType,
+      planDuration: body.planDuration,
+      ...(body.password ? { passwordHash: await hashPassword(body.password) } : {}),
     },
   });
 
@@ -72,7 +89,7 @@ export async function DELETE(
     // Check if user has referrals
     if (user._count.referrals > 0) {
       return NextResponse.json(
-        { error: `Cannot delete "${user.username}". They have ${user._count.referrals} direct referral(s). Please remove or reassign referrals first.` },
+        { error: `Cannot delete user ID "${user.username}". They have ${user._count.referrals} direct referral(s). Please remove or reassign referrals first.` },
         { status: 400 }
       );
     }
@@ -81,7 +98,7 @@ export async function DELETE(
     if (user.leftChildId || user.rightChildId) {
       const children = [user.leftChildId, user.rightChildId].filter(Boolean).length;
       return NextResponse.json(
-        { error: `Cannot delete "${user.username}". They have ${children} child(ren) in the binary tree. Please remove or reassign children first.` },
+        { error: `Cannot delete user ID "${user.username}". They have ${children} child(ren) in the binary tree. Please remove or reassign children first.` },
         { status: 400 }
       );
     }
@@ -92,7 +109,7 @@ export async function DELETE(
     });
     if (referencedAsSponsor > 0) {
       return NextResponse.json(
-        { error: `Cannot delete "${user.username}". They are referenced as sponsor by ${referencedAsSponsor} user(s).` },
+        { error: `Cannot delete user ID "${user.username}". They are referenced as sponsor by ${referencedAsSponsor} user(s).` },
         { status: 400 }
       );
     }

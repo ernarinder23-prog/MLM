@@ -2,12 +2,6 @@
 
 import { useState, useEffect } from "react";
 
-interface Package {
-  id: string;
-  name: string;
-  type: string;
-  amount: number;
-}
 interface User {
   id: string;
   username: string;
@@ -16,7 +10,6 @@ interface User {
 export interface AddUserFormValues {
   firstName: string;
   lastName: string;
-  username: string;
   email: string;
   password: string;
   phone: string;
@@ -24,12 +17,13 @@ export interface AddUserFormValues {
   dateOfBirth: string;
   placementId: string;
   placementSide: "LEFT" | "RIGHT";
-  packageId: string;
   investmentAmount: string;
   bankName: string;
   accountNo: string;
   ifsc: string;
   ePin: string;
+  planType: "FIXED" | "FLEXI" | "";
+  planDuration: "2_YEARS" | "YEARLY" | "HALF_YEARLY" | "QUARTERLY" | "";
 }
 
 interface AddUserFormProps {
@@ -46,7 +40,6 @@ interface AddUserFormProps {
 const defaultForm: AddUserFormValues = {
   firstName: "",
   lastName: "",
-  username: "",
   email: "",
   password: "",
   phone: "",
@@ -54,12 +47,13 @@ const defaultForm: AddUserFormValues = {
   dateOfBirth: "",
   placementId: "",
   placementSide: "LEFT",
-  packageId: "",
   investmentAmount: "",
   bankName: "",
   accountNo: "",
   ifsc: "",
   ePin: "",
+  planType: "",
+  planDuration: "",
 };
 
 export function AddUserForm({
@@ -72,20 +66,17 @@ export function AddUserForm({
   onSuccess,
   showEPin = true,
 }: AddUserFormProps) {
-  const [packages, setPackages] = useState<Package[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [form, setForm] = useState<AddUserFormValues>(defaultForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/packages").then((r) => r.json()),
-      fetch(placementUsersApi).then((r) => r.json()),
-    ]).then(([pkgRes, userRes]) => {
-      if (pkgRes.packages) setPackages(pkgRes.packages);
-      if (userRes.users) setUsers(userRes.users);
-    });
+    fetch(placementUsersApi)
+      .then((r) => r.json())
+      .then((userRes) => {
+        if (userRes.users) setUsers(userRes.users);
+      });
   }, [placementUsersApi]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -93,10 +84,13 @@ export function AddUserForm({
     setError("");
     setLoading(true);
     try {
+      if (!form.planType || !form.planDuration) {
+        setError("Plan type and duration are required");
+        return;
+      }
       const payload = {
         firstName: form.firstName,
         lastName: form.lastName,
-        username: form.username,
         email: form.email,
         password: form.password,
         phone: form.phone || undefined,
@@ -104,10 +98,11 @@ export function AddUserForm({
         dateOfBirth: form.dateOfBirth || undefined,
         placementId: form.placementId || undefined,
         placementSide: form.placementSide,
-        packageId: form.packageId || undefined,
         investmentAmount: form.investmentAmount || undefined,
         bankDetails: form.bankName || form.accountNo || form.ifsc ? { bankName: form.bankName, accountNo: form.accountNo, ifsc: form.ifsc } : undefined,
         ePin: showEPin ? (form.ePin || undefined) : undefined,
+        planType: form.planType,
+        planDuration: form.planDuration,
       };
       const res = await fetch(submitApi, {
         method: "POST",
@@ -143,8 +138,8 @@ export function AddUserForm({
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Username</label>
-          <input type="text" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="input" required />
+          <label className="block text-sm font-medium mb-2">User ID</label>
+          <input type="text" value="Auto-generated" className="input" disabled />
         </div>
         <div>
           <label className="block text-sm font-medium mb-2">Email</label>
@@ -167,7 +162,7 @@ export function AddUserForm({
           <input type="date" value={form.dateOfBirth} onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })} className="input" />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Placement (Sponsor)</label>
+          <label className="block text-sm font-medium mb-2">Placement (Sponsor User ID)</label>
           <select value={form.placementId} onChange={(e) => setForm({ ...form, placementId: e.target.value })} className="input">
             <option value="">Select</option>
             {users.map((u) => (
@@ -183,16 +178,42 @@ export function AddUserForm({
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Package</label>
-          <select value={form.packageId} onChange={(e) => setForm({ ...form, packageId: e.target.value })} className="input">
+          <label className="block text-sm font-medium mb-2">Plan Type</label>
+          <select
+            value={form.planType}
+            onChange={(e) => setForm({ ...form, planType: e.target.value as AddUserFormValues["planType"], planDuration: "" })}
+            className="input"
+            required
+          >
             <option value="">Select</option>
-            {packages.map((p) => (
-              <option key={p.id} value={p.id}>{p.name} (₹{p.amount})</option>
-            ))}
+            <option value="FIXED">Fixed</option>
+            <option value="FLEXI">Flexi</option>
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Investment Amount (₹)</label>
+          <label className="block text-sm font-medium mb-2">Plan Duration</label>
+          <select
+            value={form.planDuration}
+            onChange={(e) => setForm({ ...form, planDuration: e.target.value as AddUserFormValues["planDuration"] })}
+            className="input"
+            required
+            disabled={!form.planType}
+          >
+            <option value="">Select</option>
+            {form.planType === "FIXED" && (
+              <option value="2_YEARS">2 Years</option>
+            )}
+            {form.planType === "FLEXI" && (
+              <>
+                <option value="YEARLY">Yearly</option>
+                <option value="HALF_YEARLY">Half-Yearly</option>
+                <option value="QUARTERLY">Quarterly</option>
+              </>
+            )}
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-2">Investment Amount (Rs)</label>
           <input type="number" value={form.investmentAmount} onChange={(e) => setForm({ ...form, investmentAmount: e.target.value })} className="input" min="0" step="0.01" placeholder="0" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

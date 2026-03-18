@@ -38,7 +38,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           <DeleteButton
             id={id}
             apiEndpoint="/api/individual/users"
-            confirmMessage={`Delete user "${user.username}"? This action cannot be undone.`}
+                confirmMessage={`Delete user ID "${user.username}"? This action cannot be undone.`}
             redirectTo="/dashboard/users"
           />
         </div>
@@ -53,7 +53,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
               <dd className="font-medium">{user.firstName} {user.lastName}</dd>
             </div>
             <div>
-              <dt className="text-text-secondary">Username</dt>
+              <dt className="text-text-secondary">User ID</dt>
               <dd className="font-medium">{user.username}</dd>
             </div>
             <div>
@@ -69,8 +69,22 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
               <dd className="font-medium">{user.address || "-"}</dd>
             </div>
             <div>
-              <dt className="text-text-secondary">Package</dt>
-              <dd className="font-medium">{user.package?.name || "-"}</dd>
+              <dt className="text-text-secondary">Plan Type</dt>
+              <dd className="font-medium">{user.planType === "FIXED" ? "Fixed" : user.planType === "FLEXI" ? "Flexi" : "-"}</dd>
+            </div>
+            <div>
+              <dt className="text-text-secondary">Plan Duration</dt>
+              <dd className="font-medium">
+                {user.planDuration === "2_YEARS"
+                  ? "2 Years"
+                  : user.planDuration === "YEARLY"
+                  ? "Yearly"
+                  : user.planDuration === "HALF_YEARLY"
+                  ? "Half-Yearly"
+                  : user.planDuration === "QUARTERLY"
+                  ? "Quarterly"
+                  : "-"}
+              </dd>
             </div>
             <div>
               <dt className="text-text-secondary">Investment Amount</dt>

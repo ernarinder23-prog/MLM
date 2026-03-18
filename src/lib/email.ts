@@ -53,7 +53,7 @@ export async function sendWelcomeEmail(
             <div style="background-color: #fff; padding: 15px; border-left: 4px solid #007bff; margin: 20px 0;">
               <p style="margin: 5px 0; color: #333;"><strong>Login Credentials:</strong></p>
               <p style="margin: 8px 0; color: #555;">
-                <strong>Username:</strong> <code style="background-color: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${username}</code>
+                <strong>User ID:</strong> <code style="background-color: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${username}</code>
               </p>
               <p style="margin: 8px 0; color: #555;">
                 <strong>Password:</strong> <code style="background-color: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${password}</code>
@@ -83,7 +83,7 @@ Hi ${firstName},
 Your account has been successfully created on the Cadence Solution platform.
 
 LOGIN CREDENTIALS:
-Username: ${username}
+User ID: ${username}
 Password: ${password}
 
 You can now log in to your account and start managing your network.

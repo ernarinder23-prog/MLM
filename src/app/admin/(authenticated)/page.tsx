@@ -115,7 +115,7 @@ export default async function AdminDashboardPage() {
             <thead>
               <tr className="border-b border-gray-200 text-left text-text-secondary text-sm">
                 <th className="pb-3 font-medium">User</th>
-                <th className="pb-3 font-medium">Username</th>
+                <th className="pb-3 font-medium">User ID</th>
                 <th className="pb-3 font-medium">Joined</th>
                 <th className="pb-3 font-medium">Action</th>
               </tr>

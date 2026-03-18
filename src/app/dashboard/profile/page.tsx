@@ -23,7 +23,7 @@ export default async function ProfilePage() {
           <p className="font-medium">{user.firstName} {user.lastName}</p>
         </div>
         <div>
-          <p className="text-text-secondary text-sm">Username</p>
+          <p className="text-text-secondary text-sm">User ID</p>
           <p className="font-medium">{user.username}</p>
         </div>
         <div>
@@ -39,8 +39,8 @@ export default async function ProfilePage() {
           <p className="font-medium">{user.address || "-"}</p>
         </div>
         <div>
-          <p className="text-text-secondary text-sm">Package</p>
-          <p className="font-medium">{user.package?.name || "-"}</p>
+          <p className="text-text-secondary text-sm">Plan Type</p>
+          <p className="font-medium">{user.planType === "FIXED" ? "Fixed" : user.planType === "FLEXI" ? "Flexi" : "-"}</p>
         </div>
       </div>
     </div>

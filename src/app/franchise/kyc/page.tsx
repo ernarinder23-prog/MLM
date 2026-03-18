@@ -27,7 +27,7 @@ export default async function FranchiseKycPage() {
           <tbody>
             {kycList.map((k) => (
               <tr key={k.id} className="border-b border-gray-100">
-                <td className="py-4 px-4">{k.user.firstName} {k.user.lastName} ({k.user.username})</td>
+                <td className="py-4 px-4">{k.user.firstName} {k.user.lastName} (User ID {k.user.username})</td>
                 <td className="py-4 px-4">{k.documentType}</td>
                 <td className="py-4 px-4">
                   <span className={`px-2 py-1 rounded text-xs ${
